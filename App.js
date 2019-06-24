@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import HomePage from "./pages/Home";
 import ConnectPage from "./pages/Connect";
 import {createStackNavigator, createAppContainer} from 'react-navigation';
