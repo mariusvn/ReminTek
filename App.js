@@ -1,15 +1,21 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import HomePage from "./pages/Home";
-<<<<<<< Updated upstream
 import ConnectPage from "./pages/Connect";
-=======
->>>>>>> Stashed changes
+import {createStackNavigator, createAppContainer} from 'react-navigation';
 
-export default class App extends Component {
-  render() {
-    return (
-        <HomePage/>
-    );
-  }
-}
+
+const MainNavigator = createStackNavigator({
+	Connect: {screen: ConnectPage},
+	Home: {screen: HomePage}
+	},
+	{
+		headerMode: 'none',
+		navigationOptions: {
+			headerVisible: false,
+		}
+	});
+
+const App = createAppContainer(MainNavigator);
+
+export default App;
