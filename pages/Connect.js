@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 export default class ConnectPage extends Component {
     render() {
         return (
+<<<<<<< Updated upstream
             <View style={{flex: 1}}>
 	            <LinearGradient style={{flex: 1, alignItems: "center"}} colors={['#FFC371', '#FF5F6D']}  start={{x: 1.0, y: 0}} end={{x: 0, y: 1.0}}>
                     <Text style={style.mainTitle}>ReminTek</Text>
@@ -25,6 +26,11 @@ export default class ConnectPage extends Component {
 			            <Text style={style.subsubTitle}>Be notified of all important dates of your projects and modules</Text>
 		            </View>
 	            </LinearGradient>
+=======
+            <View>
+                <Text>ReminTek</Text>        
+                <Text>Hello</Text>
+>>>>>>> Stashed changes
             </View>
         )
     }
