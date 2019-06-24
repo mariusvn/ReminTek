@@ -1,10 +1,10 @@
 {
   "name": "ReminTek",
-  "version": "0.0.1",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "server": "node ./server/main.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
