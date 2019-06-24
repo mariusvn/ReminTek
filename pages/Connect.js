@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, TextInput, Text, View, Button} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import config from '../config/client';
+import Notification from 'react-native-android-local-notification';
 
 export default class ConnectPage extends Component {
 
@@ -11,11 +12,15 @@ export default class ConnectPage extends Component {
 		this.state = {
 			username: '',
 			modalShow: true
-		}
+		};
 	}
 
 	checkEpitechMail(mail) {
 		return new Promise((resolve, reject) => {
+			Notification.create({ message: 'Testing.' }).then(function(notification) {
+				console.log(notification);
+				console.log(notification.id);
+			});
 			fetch('http://' + config.server_ip + '/api/user/' + mail, {
 				method: 'GET',
 				headers: {
