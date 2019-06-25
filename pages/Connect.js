@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {StyleSheet, TextInput, Text, View, Button} from 'react-native';
+import {StyleSheet, TextInput, Text, View, Button, AsyncStorage} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import config from '../config/client';
-import Notification from 'react-native-android-local-notification';
+import epitechManager from '../client/EpitechManager';
 
 export default class ConnectPage extends Component {
 
@@ -10,35 +10,21 @@ export default class ConnectPage extends Component {
 		super(a);
 		this.checkEpitechMail.bind(this);
 		this.state = {
-			username: '',
-			modalShow: true
+			username: ''
 		};
+		const {navigate} = this.props.navigation;
+		AsyncStorage.getItem('email').then((res) => {
+			if (res !== null) {
+				this.setState({username: res});
+				navigate('Home');
+			}
+		}).catch((err) => {
+			console.error(err);
+		});
 	}
 
 	checkEpitechMail(mail) {
-		return new Promise((resolve, reject) => {
-			Notification.create({ message: 'Testing.' }).then(function(notification) {
-				console.log(notification);
-				console.log(notification.id);
-			});
-			fetch('http://' + config.server_ip + '/api/user/' + mail, {
-				method: 'GET',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				}
-			}).then((res) => {
-				if (res.ok) {
-					res.json().then((res) => {
-						return resolve(res.exists);
-					}).catch((err) => {
-						return reject(err);
-					});
-				}
-			}).catch((err) => {
-				return reject(err);
-			});
-		});
+		return epitechManager.isUserExists(mail);
 	}
 
     render() {
@@ -58,8 +44,12 @@ export default class ConnectPage extends Component {
 		            </View>
 		            <View style={{width: '55%', marginTop: 30}}>
 						<Button title={"CONNECT"} style={{flex: 0.4, width: 100}} color={'#5CE59A'} onPress={async () => {
-							if (await this.checkEpitechMail(this.state.username)) {
-								navigate('Home');
+							try {
+								if (await this.checkEpitechMail(this.state.username)) {
+									navigate('Home');
+								}
+							} catch (e) {
+								console.error(e);
 							}
 						}}/>
 		            </View>
