@@ -27,4 +27,25 @@ export default new class EpitechManager {
 			return false;
 		}
 	}
+
+
+	async getModule(year, module, instance) {
+		try {
+			const req = await fetch(`http://${config.server_ip}/api/module/${year}/${module}/${instance}`, {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				}
+			});
+			if (req.ok) {
+				return await req.json();
+			}
+			return undefined;
+		} catch (e) {
+			console.error(e);
+			return undefined;
+		}
+	}
+
 }
