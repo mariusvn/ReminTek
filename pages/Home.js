@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, ScrollView, Image, Modal, TouchableHighlight, View, TextInput, Button } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import LinearGradient from 'react-native-linear-gradient';o
 
 export default class HomePage extends Component {
     constructor(a) {

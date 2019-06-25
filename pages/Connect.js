@@ -3,6 +3,7 @@ import {StyleSheet, TextInput, Text, View, Button, AsyncStorage} from 'react-nat
 import LinearGradient from 'react-native-linear-gradient';
 import config from '../config/client';
 import epitechManager from '../client/EpitechManager';
+import Notification from 'react-native-android-local-notification';
 
 export default class ConnectPage extends Component {
 
@@ -23,8 +24,12 @@ export default class ConnectPage extends Component {
 		});
 	}
 
-	checkEpitechMail(mail) {
-		return epitechManager.isUserExists(mail);
+	async checkEpitechMail(mail) {
+		let exists = await epitechManager.isUserExists(mail);
+		if (exists) {
+			await AsyncStorage.setItem('email', mail);
+		}
+		return exists;
 	}
 
     render() {
