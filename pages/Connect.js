@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, TextInput, Text, View, Button, AsyncStorage} from 'react-native';
+import {StyleSheet, TextInput, Text, View, Button, AsyncStorage, Modal, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import config from '../config/client';
 import epitechManager from '../client/EpitechManager';
@@ -11,7 +11,8 @@ export default class ConnectPage extends Component {
 		super(a);
 		this.checkEpitechMail.bind(this);
 		this.state = {
-			username: ''
+			username: '',
+			modalVisible: false
 		};
 		const {navigate} = this.props.navigation;
 		AsyncStorage.getItem('email').then((res) => {
@@ -36,6 +37,13 @@ export default class ConnectPage extends Component {
 	    const {navigate} = this.props.navigation;
         return (
             <View style={{flex: 1}}>
+	            <Modal transparent={true} visible={this.state.modalVisible}>
+		            <View style={style.modal}>
+			            <View style={{width: '50%', height: 60, alignItems: 'center', paddingTop: 20, borderRadius: 10, backgroundColor: 'rgba(216,216,216,0.68)'}}>
+			                <Text>Loading ...</Text>
+			            </View>
+		            </View>
+	            </Modal>
 	            <LinearGradient style={{flex: 1, alignItems: "center"}} colors={['#FFC371', '#FF5F6D']}  start={{x: 1.0, y: 0}} end={{x: 0, y: 1.0}}>
                     <Text style={style.mainTitle}>ReminTek</Text>
 		            <Text style={style.emailTitle}>Epitech E-mail :</Text>
@@ -50,10 +58,13 @@ export default class ConnectPage extends Component {
 		            <View style={{width: '55%', marginTop: 30}}>
 						<Button title={"CONNECT"} style={{flex: 0.4, width: 100}} color={'#5CE59A'} onPress={async () => {
 							try {
+								this.setState({modalVisible: true});
 								if (await this.checkEpitechMail(this.state.username)) {
+									this.setState({modalVisible: false});
 									navigate('Home');
 								}
 							} catch (e) {
+								this.setState({modalVisible: false});
 								console.error(e);
 							}
 						}}/>
@@ -118,5 +129,14 @@ const style = StyleSheet.create({
 		textShadowOffset: {width: 0, height: 0},
 		textShadowRadius: 10,
 		textAlign: 'center'
+	},
+	modal: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
