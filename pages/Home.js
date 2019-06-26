@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, ScrollView, Image, Modal, TouchableHighlight, View, TextInput, Button } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import EpitechManager from '../client/EpitechManager';
+import moment from 'moment'
 
 export default class HomePage extends Component {
     constructor(a) {
@@ -48,8 +49,16 @@ export default class HomePage extends Component {
         if (this.state.ModuleList.length == 0)
             return (modules);
         for (let i = 0; this.state.ModuleList && i < this.state.ModuleList.length; i++) {
-            if (this.state.fetchedModuleList[i])
-                modules.push(<View style={{flex: 1}} key={i}><View style={style.Module}><Text>{this.state.fetchedModuleList[i].title}</Text></View><View><Text style={style.moduleTimer}>2 Days left</Text></View></View>);
+            if (this.state.fetchedModuleList[i]) {
+                var date1 = moment(this.state.fetchedModuleList[i].end);
+                var date2 = moment();
+                var diff = date2.diff(date1);
+                if (date2 < date1)
+                    modules.push(<View style={{flex: 1}} key={i}><View style={style.Module}><Text>{this.state.fetchedModuleList[i].title}</Text></View><View><Text style={style.moduleTimer}>You have {date1.format('D')} days left</Text></View></View>);
+                else
+                    modules.push(<View style={{flex: 1}} key={i}><View style={style.Module}><Text>{this.state.fetchedModuleList[i].title}</Text></View><View><Text style={style.moduleTimer}>The project ended {date1.format('D')} days ago</Text></View></View>);
+
+            }
         }
         return (modules);
     }
