@@ -108,11 +108,11 @@ export default class HomePage extends Component {
                         <View>
                             <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={() => { this.setModalVisible(!this.state.modalVisible); }}>
                                 <View style={style.popUpModule}>
-                                    <TextInput placeholder={"Module ID ex: B-CNA-410"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }}
+                                    <TextInput placeholder={"Module ID ex: B-CNA-410"} style={{ height: 35, borderColor: 'gray', borderWidth: 1, width: 180, marginBottom: 5 }}
                                         onChangeText={(textID) => this.setState({ textID })} value={this.state.textID} />
-                                    <TextInput placeholder={"Year ex: 2018"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }}
+                                    <TextInput placeholder={"Year ex: 2018"} style={{ height: 35, borderColor: 'gray', borderWidth: 1, width: 180, marginBottom: 5}}
                                         onChangeText={(textYEAR) => this.setState({ textYEAR })} value={this.state.textYEAR} />
-                                    <TextInput placeholder={"Instance ex: MPL-4-1"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }}
+                                    <TextInput placeholder={"Instance ex: MPL-4-1"} style={{ height: 35, borderColor: 'gray', borderWidth: 1, width: 180, marginBottom: 5 }}
                                         onChangeText={(textINST) => this.setState({ textINST })} value={this.state.textINST} />
                                     <View style={{ marginTop: 15, width: '75%' }}>
                                         <Button title="Add Module" color="#5CE59A" accessibilityLabel="Add module to the list of tracked modules" onPress={this.AddModules} />
@@ -152,7 +152,7 @@ const style = StyleSheet.create({
         width: 215,
         height: 215,
         marginTop: 150,
-        paddingTop: 15,
+        paddingTop: 20,
         borderRadius: 10,
         marginLeft: '25%',
         alignItems: 'center',
