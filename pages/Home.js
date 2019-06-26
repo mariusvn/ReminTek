@@ -68,10 +68,12 @@ export default class HomePage extends Component {
             if (this.state.fetchedModuleList[i]) {
                 var date1 = moment(this.state.fetchedModuleList[i].end);
                 var date2 = moment();
-                if (date2 < date1)
-                    modules.push(<View style={{flex: 1, justifyContent: 'center'}} key={i}><View style={{flex: 1, alignItems: 'center'}}><Text style={style.Module}>{this.state.fetchedModuleList[i].title}</Text><Text style={style.ModuleTimer}>You have {date1.format('D')} days left</Text></View></View>);
-                else
-                    modules.push(<View style={{flex: 1, justifyContent: 'center'}} key={i}><View style={{flex: 1, alignItems: 'center'}}><Text style={style.Module}>{this.state.fetchedModuleList[i].title}</Text><Text style={style.ModuleTimer}>The module ended {date1.format('D')} days ago</Text></View></View>);
+                let str = "";
+                str = (date2 < date1) ? `You have ${date1.format('D')} days left` : `The module ended ${date1.format('D')} days ago`;
+                modules.push(<View style={{flex: 1, justifyContent: 'center'}} key={i}><View style={{flex: 1, alignItems: 'center'}}><Text style={style.Module}>{this.state.fetchedModuleList[i].title}</Text><Text style={style.ModuleTimer}>{str}</Text></View></View>);
+
+            } else {
+	            modules.push(<View style={{flex: 1, justifyContent: 'center'}} key={i}><View style={{flex: 1, alignItems: 'center'}}><Text style={style.Module}>Loading ...</Text></View></View>);
 
             }
         }
@@ -98,7 +100,7 @@ export default class HomePage extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 0.1 }}>
-                    <LinearGradient style={{ flex: 1, flexDirection: 'row', height: "20%" }} colors={['#FFC371', '#FF5F6D']} start={{ x: 1.0, y: 0 }} end={{ x: 0, y: 1.0 }}>
+                    <LinearGradient style={{ flex: 1, flexDirection: 'row', height: 50 }} colors={['#FFC371', '#FF5F6D']} start={{ x: 1.0, y: 0 }} end={{ x: 0, y: 1.0 }}>
                         <Text style={style.mainTitle}>
                             Your next Deadlines
                         </Text>
