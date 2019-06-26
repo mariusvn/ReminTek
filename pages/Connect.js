@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {StyleSheet, TextInput, Text, View, Button, AsyncStorage, Modal, Image} from 'react-native';
+import {StyleSheet, TextInput, Text, View, Button, AsyncStorage, Modal} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import config from '../config/client';
 import epitechManager from '../client/EpitechManager';
-import Notification from 'react-native-android-local-notification';
+import {YellowBox} from 'react-native';
 
 export default class ConnectPage extends Component {
 
@@ -35,6 +34,7 @@ export default class ConnectPage extends Component {
 
     render() {
 	    const {navigate} = this.props.navigation;
+	    YellowBox.ignoreWarnings(['Warning: Async Storage has been extracted from react-native core']);
         return (
             <View style={{flex: 1}}>
 	            <Modal transparent={true} visible={this.state.modalVisible}>
@@ -59,6 +59,7 @@ export default class ConnectPage extends Component {
 						<Button title={"CONNECT"} style={{flex: 0.4, width: 100}} color={'#5CE59A'} onPress={async () => {
 							try {
 								this.setState({modalVisible: true});
+								AsyncStorage.setItem('module-list', '[]');
 								if (await this.checkEpitechMail(this.state.username)) {
 									this.setState({modalVisible: false});
 									navigate('Home');

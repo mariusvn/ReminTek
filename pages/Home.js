@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, ScrollView, Image, Modal, TouchableHighlight, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, ScrollView, Image, Modal,
+	TouchableHighlight, View, TextInput, Button, AsyncStorage} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import EpitechManager from '../client/EpitechManager';
-import moment from 'moment'
+import moment from 'moment';
+import Notification from 'react-native-android-local-notification';
 
 export default class HomePage extends Component {
     constructor(a) {
@@ -16,6 +18,20 @@ export default class HomePage extends Component {
             fetchedModuleList: [],
             fetchedModules: false
         };
+        AsyncStorage.getItem('module-list').then((res) => {
+        	if (res !== null) {
+        		try {
+			        this.setState({ModuleList: JSON.parse(res)}, async () => {
+				        await this.fetchModule();
+			            console.log('Loaded module list');
+			        });
+		        } catch (e) {
+        			console.error(e);
+		        }
+	        }
+        }).catch((err) => {
+			console.error(err);
+        });
         this.getModules.bind(this);
         this.AddModule.bind(this);
         this.AddModules.bind(this);
@@ -37,7 +53,7 @@ export default class HomePage extends Component {
             this.state.fetchedModules = true;
         });
         return {fetchedModuleList: temp};
-    }
+    };
 
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
@@ -60,23 +76,23 @@ export default class HomePage extends Component {
             }
         }
         return (modules);
-    }
+    };
 
     AddModule = () => {
         return new Promise(resolve => {
             this.setState(state => {
                 return {modalVisible: !this.state.modalVisible, ModuleList: [...this.state.ModuleList, {id: state.textID, instance: state.textINST, year: state.textYEAR}], textID: '', textYEAR: '', textINST: '', fetchedModules: false};
             }, () => {
-                console.log(this.state);
+            	AsyncStorage.setItem('module-list', JSON.stringify(this.state.ModuleList));
                 resolve();
             });
         });
-    }
+    };
 
     AddModules = async () => {
         await this.AddModule();
         this.fetchModule();
-    }
+    };
 
     render() {
         return (
@@ -109,6 +125,11 @@ export default class HomePage extends Component {
                 <ScrollView style={{ flex: 0.9 }}>
                     {this.getModules()}
                 </ScrollView>
+	            <View style={{position: 'absolute', bottom: 5, left: 50, right: 50}}>
+		            <Button title={"Test notification"} color={'#5CE59A'} onPress={() => {
+			            Notification.create({ subject: 'OOP_nanotekspice_2018', message: 'Your project OOP_nanotekspice_2018 finish in 2 days.' });
+		            }}/>
+	            </View>
             </View>
         );
     }
