@@ -52,11 +52,10 @@ export default class HomePage extends Component {
             if (this.state.fetchedModuleList[i]) {
                 var date1 = moment(this.state.fetchedModuleList[i].end);
                 var date2 = moment();
-                var diff = date2.diff(date1);
                 if (date2 < date1)
-                    modules.push(<View style={{flex: 1}} key={i}><View style={style.Module}><Text>{this.state.fetchedModuleList[i].title}</Text></View><View><Text style={style.moduleTimer}>You have {date1.format('D')} days left</Text></View></View>);
+                    modules.push(<View style={{flex: 1, justifyContent: 'center'}} key={i}><View style={{flex: 1, alignItems: 'center'}}><Text style={style.Module}>{this.state.fetchedModuleList[i].title}</Text><Text style={style.ModuleTimer}>You have {date1.format('D')} days left</Text></View></View>);
                 else
-                    modules.push(<View style={{flex: 1}} key={i}><View style={style.Module}><Text>{this.state.fetchedModuleList[i].title}</Text></View><View><Text style={style.moduleTimer}>The project ended {date1.format('D')} days ago</Text></View></View>);
+                    modules.push(<View style={{flex: 1, justifyContent: 'center'}} key={i}><View style={{flex: 1, alignItems: 'center'}}><Text style={style.Module}>{this.state.fetchedModuleList[i].title}</Text><Text style={style.ModuleTimer}>The module ended {date1.format('D')} days ago</Text></View></View>);
 
             }
         }
@@ -129,11 +128,14 @@ const style = StyleSheet.create({
         textShadowRadius: 10
     },
     popUpModule: {
-        width: 180,
-        height: 200,
-        marginTop: 100,
+        width: 215,
+        height: 215,
+        marginTop: 150,
+        paddingTop: 15,
+        borderRadius: 10,
         marginLeft: '25%',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'rgba(216,216,216,0.9)'
     },
     PopUpText: {
         fontFamily: 'Ubuntu',
@@ -143,25 +145,18 @@ const style = StyleSheet.create({
     },
     Module: {
         fontFamily: 'Ubuntu',
-        fontSize: 22,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#000000',
-        lineHeight: 24,
-        textAlign: 'center',
-        flex: 0.5,
-        justifyContent: 'center',
-        alignItems: 'center'
+        lineHeight: 16,
+        marginTop: 10
     },
     ModuleTimer: {
         fontFamily: 'Ubuntu',
-        fontSize: 22,
-        lineHeight: 24,
+        fontSize: 16,
+        lineHeight: 16,
         color: '#000000',
-        textAlign: 'center',
-        paddingLeft: '50%',
-        flex: 0.5,
-        justifyContent: 'center',
-        alignItems: 'center'
+        marginBottom: 15
     },
     ModuleLabel: {
 
