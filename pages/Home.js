@@ -1,16 +1,41 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, ScrollView, Image, Modal, TouchableHighlight, View, TextInput, Button } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';o
+import LinearGradient from 'react-native-linear-gradient';
+import EpitechManager from '../client/EpitechManager';
 
 export default class HomePage extends Component {
     constructor(a) {
         super(a);
         this.state = {
             modalVisible: false,
-            text: '',
-            bool: false,
-            ModuleList: []
+            textID: 'B-CNA-410',
+            textYEAR: '2018',
+            textINST: 'MPL-4-1',
+            ModuleList: [],
+            fetchedModuleList: [],
+            fetchedModules: false
         };
+        this.getModules.bind(this);
+        this.AddModule.bind(this);
+        this.AddModules.bind(this);
+        this.fetchModule.bind(this);
+        this.setModalVisible.bind(this);
+    }
+
+    fetchModule = async () => {
+        var temp = [];
+        if (this.state.ModuleList.length == 0)
+            return (temp);
+        let tmpModuleList = [];
+        for (let i = 0; i < this.state.ModuleList.length; i++) {
+            tmpModuleList = [...tmpModuleList, await EpitechManager.getModule(this.state.ModuleList[i].year, this.state.ModuleList[i].id, this.state.ModuleList[i].instance)];
+        }
+        this.setState(state => {
+            return {fetchedModuleList: tmpModuleList}
+        }, () => {
+            this.state.fetchedModules = true;
+        });
+        return {fetchedModuleList: temp};
     }
 
     setModalVisible(visible) {
@@ -21,59 +46,62 @@ export default class HomePage extends Component {
         var modules = [];
 
         if (this.state.ModuleList.length == 0)
-            return ({modules});
-        for(let i = 0; this.state.ModuleList && i < this.state.ModuleList.length; i++) {
-			modules.push(
-                <View>
-                    <Text>{this.state.ModuleList[i]}</Text>
-                </View>
-            );
-            console.log(this.state.ModuleList[i]);
+            return (modules);
+        for (let i = 0; this.state.ModuleList && i < this.state.ModuleList.length; i++) {
+            if (this.state.fetchedModuleList[i])
+                modules.push(<View style={{flex: 1}} key={i}><View style={style.Module}><Text>{this.state.fetchedModuleList[i].title}</Text></View><View><Text style={style.moduleTimer}>2 Days left</Text></View></View>);
         }
-        return ({modules});
+        return (modules);
     }
 
     AddModule = () => {
-        this.setState(state => {
-            const moduleList = this.state.ModuleList.concat(state.text);
-            for(let i = 0; moduleList && i < moduleList.length; i++) {
-                console.log(moduleList[i]);
-                console.log(moduleList.length);
-            }
-            this.getModules();
-            return {modalVisible: !this.state.modalVisible, ModuleList: moduleList, text: ''};
+        return new Promise(resolve => {
+            this.setState(state => {
+                return {modalVisible: !this.state.modalVisible, ModuleList: [...this.state.ModuleList, {id: state.textID, instance: state.textINST, year: state.textYEAR}], textID: '', textYEAR: '', textINST: '', fetchedModules: false};
+            }, () => {
+                console.log(this.state);
+                resolve();
+            });
         });
+    }
+
+    AddModules = async () => {
+        await this.AddModule();
+        this.fetchModule();
     }
 
     render() {
         return (
-            <ScrollView style={{flex: 1}}>
-                <LinearGradient style={{ flex: 1, flexDirection: 'row', height: 50 }} colors={['#FFC371', '#FF5F6D']} start={{ x: 1.0, y: 0 }} end={{ x: 0, y: 1.0 }}>
-                    <Text style={style.mainTitle}>
-                        Your next Deadlines
-                    </Text>
-                    <TouchableHighlight onPress={() => { this.setModalVisible(!this.state.modalVisible); }}>
-                        <Image source={require('../Assets/plus-symbol.png')} style={{ maxWidth: 25, maxHeight: 25, marginTop: 10 }} />
-                    </TouchableHighlight>
-                    <View>
-                        <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={() => { this.setModalVisible(!this.state.modalVisible); }}>
-                            <View style={style.popUpModule}>
-                                <TextInput placeholder={"Module ID"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }} 
-                                    onChangeText={(text) => this.setState({text})} value={this.state.text} />
-                                <View style={{marginTop: 15, width: '75%'}}>
-                                    <Button title="Add Module" color="#5CE59A" accessibilityLabel="Add module to the list of tracked modules" onPress={(this.AddModule)} />
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 0.1 }}>
+                    <LinearGradient style={{ flex: 1, flexDirection: 'row', height: "20%" }} colors={['#FFC371', '#FF5F6D']} start={{ x: 1.0, y: 0 }} end={{ x: 0, y: 1.0 }}>
+                        <Text style={style.mainTitle}>
+                            Your next Deadlines
+                        </Text>
+                        <TouchableHighlight onPress={() => { this.setModalVisible(!this.state.modalVisible); }}>
+                            <Image source={require('../Assets/plus-symbol.png')} style={{ maxWidth: 25, maxHeight: 25, marginTop: 10 }} />
+                        </TouchableHighlight>
+                        <View>
+                            <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={() => { this.setModalVisible(!this.state.modalVisible); }}>
+                                <View style={style.popUpModule}>
+                                    <TextInput placeholder={"Module ID ex: B-CNA-410"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }}
+                                        onChangeText={(textID) => this.setState({ textID })} value={this.state.textID} />
+                                    <TextInput placeholder={"Year ex: 2018"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }}
+                                        onChangeText={(textYEAR) => this.setState({ textYEAR })} value={this.state.textYEAR} />
+                                    <TextInput placeholder={"Instance ex: MPL-4-1"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 180 }}
+                                        onChangeText={(textINST) => this.setState({ textINST })} value={this.state.textINST} />
+                                    <View style={{ marginTop: 15, width: '75%' }}>
+                                        <Button title="Add Module" color="#5CE59A" accessibilityLabel="Add module to the list of tracked modules" onPress={this.AddModules} />
+                                    </View>
                                 </View>
-                            </View>
-                        </Modal>
-                        {/* <Modal animationType={"none"} visible={this.state.bool} transparent={false} onRequestClose={() => {this.setState({bool: true}); }}>
-                            <View>
-                                <Text>Test</Text>
-                            </View>
-                        </Modal> */}
-                        {this.getModules}
-                    </View>
-                </LinearGradient>
-            </ScrollView>
+                            </Modal>
+                        </View>
+                    </LinearGradient>
+                </View>
+                <ScrollView style={{ flex: 0.9 }}>
+                    {this.getModules()}
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -103,6 +131,31 @@ const style = StyleSheet.create({
         fontSize: 22,
         color: '#000000',
         textAlign: 'center'
+    },
+    Module: {
+        fontFamily: 'Ubuntu',
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#000000',
+        lineHeight: 24,
+        textAlign: 'center',
+        flex: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    ModuleTimer: {
+        fontFamily: 'Ubuntu',
+        fontSize: 22,
+        lineHeight: 24,
+        color: '#000000',
+        textAlign: 'center',
+        paddingLeft: '50%',
+        flex: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    ModuleLabel: {
+
     }
 });
 
